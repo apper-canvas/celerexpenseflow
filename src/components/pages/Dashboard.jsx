@@ -167,9 +167,10 @@ className="w-full h-20 text-lg"
           isOpen={showCSVImport}
           onClose={() => setShowCSVImport(false)}
           onSuccess={handleCSVImportSuccess}
-        />
+/>
       </div>
     </div>
+  )
 }
 
 export default Dashboard
