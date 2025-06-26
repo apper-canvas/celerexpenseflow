@@ -121,7 +121,77 @@ const expenseService = {
         expenses: lastMonthExpenses.length
       },
       percentageChange: Math.round(percentageChange * 100) / 100,
-      trend: percentageChange > 0 ? 'up' : percentageChange < 0 ? 'down' : 'same'
+trend: percentageChange > 0 ? 'up' : percentageChange < 0 ? 'down' : 'same'
+    }
+  },
+
+  async importFromCSV(csvData, columnMapping) {
+    await delay(500)
+    
+    // Validate column mapping
+    const requiredFields = ['date', 'amount', 'description']
+    for (const field of requiredFields) {
+      if (!columnMapping[field]) {
+        throw new Error(`Missing mapping for required field: ${field}`)
+      }
+    }
+
+    const importedExpenses = []
+    const errors = []
+
+    for (let i = 0; i < csvData.length; i++) {
+      const row = csvData[i]
+      try {
+        // Extract data based on column mapping
+        const dateValue = row[columnMapping.date]
+        const amountValue = row[columnMapping.amount]
+        const descriptionValue = row[columnMapping.description]
+        const categoryValue = columnMapping.category ? row[columnMapping.category] : 'Other'
+
+        // Validate required fields
+        if (!dateValue || !amountValue || !descriptionValue) {
+          errors.push(`Row ${i + 1}: Missing required data`)
+          continue
+        }
+
+        // Parse and validate amount
+        const amount = parseFloat(amountValue.toString().replace(/[^0-9.-]/g, ''))
+        if (isNaN(amount) || amount <= 0) {
+          errors.push(`Row ${i + 1}: Invalid amount value`)
+          continue
+        }
+
+        // Parse and validate date
+        const date = new Date(dateValue)
+        if (isNaN(date.getTime())) {
+          errors.push(`Row ${i + 1}: Invalid date format`)
+          continue
+        }
+
+        // Create expense object
+        const expense = {
+          Id: expenses.length > 0 ? Math.max(...expenses.map(e => e.Id)) + 1 : 1,
+          description: descriptionValue.toString().trim(),
+          amount: amount,
+          category: categoryValue.toString().trim() || 'Other',
+          date: date.toISOString(),
+          createdAt: new Date().toISOString()
+        }
+
+        expenses.push(expense)
+        importedExpenses.push({ ...expense })
+
+      } catch (error) {
+        errors.push(`Row ${i + 1}: ${error.message}`)
+      }
+    }
+
+    return {
+      imported: importedExpenses,
+      errors: errors,
+      totalRows: csvData.length,
+      successCount: importedExpenses.length,
+      errorCount: errors.length
     }
   }
 }

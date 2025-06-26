@@ -1,25 +1,29 @@
-import { useState } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
-import DashboardHeader from '@/components/organisms/DashboardHeader'
-import ExpenseForm from '@/components/molecules/ExpenseForm'
-import MonthlyChart from '@/components/organisms/MonthlyChart'
-import YearlyChart from '@/components/organisms/YearlyChart'
-import ExpenseList from '@/components/organisms/ExpenseList'
-import CategoryLegend from '@/components/molecules/CategoryLegend'
-import Button from '@/components/atoms/Button'
-import ApperIcon from '@/components/ApperIcon'
-
+import React, { useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import CSVImportModal from "@/components/molecules/CSVImportModal";
+import ApperIcon from "@/components/ApperIcon";
+import ExpenseForm from "@/components/molecules/ExpenseForm";
+import CategoryLegend from "@/components/molecules/CategoryLegend";
+import YearlyChart from "@/components/organisms/YearlyChart";
+import ExpenseList from "@/components/organisms/ExpenseList";
+import MonthlyChart from "@/components/organisms/MonthlyChart";
+import DashboardHeader from "@/components/organisms/DashboardHeader";
+import Button from "@/components/atoms/Button";
 const Dashboard = () => {
   const [showExpenseForm, setShowExpenseForm] = useState(false)
   const [editingExpense, setEditingExpense] = useState(null)
+  const [showCSVImport, setShowCSVImport] = useState(false)
   const [refreshTrigger, setRefreshTrigger] = useState(0)
-
-  const handleExpenseSuccess = () => {
+const handleExpenseSuccess = () => {
     setShowExpenseForm(false)
     setEditingExpense(null)
     setRefreshTrigger(prev => prev + 1)
   }
 
+  const handleCSVImportSuccess = () => {
+    setShowCSVImport(false)
+    setRefreshTrigger(prev => prev + 1)
+  }
   const handleEditExpense = (expense) => {
     setEditingExpense(expense)
     setShowExpenseForm(true)
@@ -65,6 +69,19 @@ const Dashboard = () => {
                 className="w-full"
               >
                 Add Expense
+</Button>
+            </div>
+
+            {/* CSV Import Button (Mobile) */}
+            <div className="lg:hidden">
+              <Button
+                variant="secondary"
+                size="large"
+                icon="Upload"
+                onClick={() => setShowCSVImport(true)}
+                className="w-full"
+              >
+                Import CSV
               </Button>
             </div>
 
@@ -102,7 +119,7 @@ const Dashboard = () => {
                       size="large"
                       icon="Plus"
                       onClick={() => setShowExpenseForm(true)}
-                      className="w-full h-20 text-lg"
+className="w-full h-20 text-lg"
                     >
                       Add New Expense
                     </Button>
@@ -111,6 +128,18 @@ const Dashboard = () => {
               )}
             </AnimatePresence>
 
+            {/* CSV Import Button (Desktop) */}
+            <div className="hidden lg:block">
+              <Button
+                variant="secondary"
+                size="large"
+                icon="Upload"
+                onClick={() => setShowCSVImport(true)}
+                className="w-full"
+              >
+                Import from CSV
+              </Button>
+            </div>
             {/* Category Legend */}
             <CategoryLegend />
           </div>
@@ -128,13 +157,19 @@ const Dashboard = () => {
               animate={{ rotate: showExpenseForm ? 45 : 0 }}
               transition={{ duration: 0.2 }}
             >
-              <ApperIcon name="Plus" className="w-6 h-6" />
+<ApperIcon name="Plus" className="w-6 h-6" />
             </motion.div>
           </motion.button>
         </div>
+
+        {/* CSV Import Modal */}
+        <CSVImportModal
+          isOpen={showCSVImport}
+          onClose={() => setShowCSVImport(false)}
+          onSuccess={handleCSVImportSuccess}
+        />
       </div>
     </div>
-  )
 }
 
 export default Dashboard
