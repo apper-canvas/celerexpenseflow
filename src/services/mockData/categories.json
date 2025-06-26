@@ -1,0 +1,44 @@
+[
+  {
+    "Id": 1,
+    "name": "Food",
+    "color": "#10B981",
+    "icon": "UtensilsCrossed"
+  },
+  {
+    "Id": 2,
+    "name": "Transport",
+    "color": "#3B82F6",
+    "icon": "Car"
+  },
+  {
+    "Id": 3,
+    "name": "Entertainment",
+    "color": "#EC4899",
+    "icon": "Music"
+  },
+  {
+    "Id": 4,
+    "name": "Shopping",
+    "color": "#F59E0B",
+    "icon": "ShoppingBag"
+  },
+  {
+    "Id": 5,
+    "name": "Bills",
+    "color": "#EF4444",
+    "icon": "Receipt"
+  },
+  {
+    "Id": 6,
+    "name": "Health",
+    "color": "#8B5CF6",
+    "icon": "Heart"
+  },
+  {
+    "Id": 7,
+    "name": "Other",
+    "color": "#6B7280",
+    "icon": "MoreHorizontal"
+  }
+]
